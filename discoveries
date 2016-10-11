@@ -1,0 +1,13 @@
+- After running a histogram on numbers from November 1997 - Present, there was a significant drop off in white ball picks from 60-69.
+    - Reason: There were multiple points in time where powerball changed the picking pool for both white balls and powerballs
+    Starting Date: April 22, 1992,   Pick 5 of 45, Pick 1 of 45
+                   November 5, 1997, Pick 5 of 49, Pick 1 of 42
+                   March 7, 2001,    Pick 5 of 49, Pick 1 of 42
+                   October 9, 2002,  Pick 5 of 53, Pick 1 of 42
+                   August 28, 2005,  Pick 5 of 55, Pick 1 of 42
+                   January 7, 2009,  Pick 5 of 59, Pick 1 of 39
+                   January 15, 2012, Pick 5 of 59, Pick 1 of 35
+                   January 19, 2014, Pick 5 of 59, Pick 1 of 35
+                   October 7, 2015,  Pick 5 of 69, Pick 1 of 26
+
+                    - Dates with no changes indicate a game multiplier change. This was not accounted for in the data analysis
