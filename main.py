@@ -1,12 +1,12 @@
 from bs4 import BeautifulSoup
 import requests
 import matplotlib.pyplot as plt
-import numpy as np
-from array import array
+import random
 
 winningPowerBalls = []
 winningWhiteBalls = []
 drawDates = []
+random_list = []
 
 # Dates indicate starting dates for the game changes (refer to discoveries.txt)
 
@@ -33,6 +33,7 @@ URL6 = 'http://www.powerball.com/powerball/pb_nbr_history.asp?startDate=10%2F3%2
 URL7 = 'http://www.powerball.com/powerball/pb_nbr_history.asp?startDate=10%2F8%2F2016&endDate=10%2F3%2F2015'
 
 
+
 def scrape(url):
 
     r = requests.get(url)
@@ -56,14 +57,21 @@ def scrape(url):
     for i in range(2):
         drawDates.pop(0)
 
+def makeRanList():
+    for i in range(535):
+        random_list.append(random.randrange(1, 70, 1))
+
 
 def plotHist():
-    print(winningWhiteBalls)
 
-    plt.hist(winningWhiteBalls, bins=range(71), range=None, normed=False, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=None, log=False, color='blue', label=None, stacked=False, hold=None)
-    plt.hist(winningPowerBalls, bins=range(28), range=None, normed=False, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=.5, log=False, color='red', label=None, stacked=False, hold=None)
+    plt.hist(winningWhiteBalls, bins=range(71), range=None, normed=False, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=None, log=False, color='green', label=None, stacked=True, hold=None)
+    #plt.hist(winningPowerBalls, bins=range(28), range=None, normed=False, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=.75, log=False, color='red', label=None, stacked=True, hold=None)
+    plt.hist(random_list, bins=range(71), range=None, normed=False, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=.5, log=False, color='blue', label=None, stacked=True, hold=None)
     plt.show()
 
 
+makeRanList()
 scrape(URL7)
 plotHist()
+
+
