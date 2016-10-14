@@ -1,13 +1,15 @@
 from bs4 import BeautifulSoup
 import requests
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 import random
+import numpy as np
 
 winningPowerBalls = []
 winningWhiteBalls = []
 drawDates = []
 random_list = []
-
+averages = []
 # Dates indicate starting dates for the game changes (refer to discoveries.txt)
 
 # April 22, 1992,   Pick 5 of 45, Pick 1 of 45
@@ -61,17 +63,64 @@ def makeRanList():
     for i in range(535):
         random_list.append(random.randrange(1, 70, 1))
 
+def getDelt(white, rand):
+
+    delt = []
+
+    for i in range(len(white)):
+        delta = white[i] - rand[i]
+        delt.append(delta)
+
+    sum = np.cumsum(delt)
+
+    avergae = sum / len(white)
+
+    averages.append(avergae)
+
+
+
+def getStats():
+
+    n_white, bins_white, patches_white = plt.hist(winningWhiteBalls, bins=range(71), range=None, normed=False, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=None, log=False, color='blue', label=None, stacked=True, hold=None)
+    #plt.hist(winningPowerBalls, bins=range(28), range=None, normed=False, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=.75, log=False, color='red', label=None, stacked=True, hold=None)
+    n_rand, bins_rand, patches_rand = plt.hist(random_list, bins=range(71), range=None, normed=False, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=.3, log=False, color='red', label=None, stacked=True, hold=None)
+
+    getDelt(n_white, n_rand)
 
 def plotHist():
+    n_white, bins_white, patches_white = plt.hist(winningWhiteBalls, bins=range(71), range=None, normed=False,
+                                                  weights=None, cumulative=False, bottom=None, histtype='bar',
+                                                  align='mid', orientation='vertical', rwidth=None, log=False,
+                                                  color='blue', label=None, stacked=True, hold=None)
+    n_rand, bins_rand, patches_rand = plt.hist(random_list, bins=range(71), range=None, normed=False, weights=None,
+                                               cumulative=False, bottom=None, histtype='bar', align='mid',
+                                               orientation='vertical', rwidth=.3, log=False, color='red', label=None,
+                                               stacked=True, hold=None)
+    blue_data = mpatches.Patch(color='blue', label='Winning Picks')
+    red_data = mpatches.Patch(color='red', label='Random Picks')
 
-    plt.hist(winningWhiteBalls, bins=range(71), range=None, normed=False, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=None, log=False, color='green', label=None, stacked=True, hold=None)
-    #plt.hist(winningPowerBalls, bins=range(28), range=None, normed=False, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=.75, log=False, color='red', label=None, stacked=True, hold=None)
-    plt.hist(random_list, bins=range(71), range=None, normed=False, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=.5, log=False, color='blue', label=None, stacked=True, hold=None)
+    plt.legend(handles=[blue_data, red_data])
+    plt.xlabel('Picks')
+    plt.ylabel('Frequencies')
+
+    plt.savefig('WhiteBallsVsRandomNums.png')
     plt.show()
 
+def getAverage():
+    sum = np.cumsum(averages)
+    avg = sum[len(averages) - 1] / len(averages)
 
-makeRanList()
+    print(avg)
+
+def runTest(runCount):
+
+    for i in range(runCount):
+        makeRanList()
+        getStats()
+        random_list[:] = []
+    getAverage()
+
 scrape(URL7)
+#runTest(1)
+makeRanList()
 plotHist()
-
-
