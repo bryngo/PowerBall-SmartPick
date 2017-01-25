@@ -4,6 +4,11 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import random
 import numpy as np
+from twilio.rest import TwilioRestClient
+
+account_sid = "ACec8e89fbcc98bc086180e75ba263bce4"
+auth_token = "239d886ffe5d7f6f7d4da6e0d886f966"
+client = TwilioRestClient(account_sid, auth_token)
 
 winningPowerBalls = []
 winningWhiteBalls = []
@@ -32,7 +37,7 @@ URL5 = 'http://www.powerball.com/powerball/pb_nbr_history.asp?startDate=1%2F14%2
 URL6 = 'http://www.powerball.com/powerball/pb_nbr_history.asp?startDate=10%2F3%2F2015&endDate=1%2F18%2F2012'
 
 # October 7, 2015,  Pick 5 of 69, Pick 1 of 26
-URL7 = 'http://www.powerball.com/powerball/pb_nbr_history.asp?startDate=10%2F8%2F2016&endDate=10%2F3%2F2015'
+URL7 = 'http://www.powerball.com/powerball/pb_nbr_history.asp?startDate=12%2F17%2F2016&endDate=10%2F3%2F2015'
 
 
 
@@ -55,14 +60,18 @@ def scrape(url):
     for dates in soup.find_all('b'):
         drawDates.append(dates.contents[0])
 
-    # the first two items in drawDates are not dates, so get rid of them.
+    # Special case where the first two items in drawDates are not dates, so get rid of them.
     for i in range(2):
         drawDates.pop(0)
 
+
+# makes a random list of numbers
 def makeRanList():
     for i in range(535):
         random_list.append(random.randrange(1, 70, 1))
 
+
+# helper function to compare random list of numbers to actual pulled numbers
 def getDelt(white, rand):
 
     delt = []
@@ -87,23 +96,25 @@ def getStats():
 
     getDelt(n_white, n_rand)
 
+
 def plotHist():
-    n_white, bins_white, patches_white = plt.hist(winningWhiteBalls, bins=range(71), range=None, normed=False,
-                                                  weights=None, cumulative=False, bottom=None, histtype='bar',
-                                                  align='mid', orientation='vertical', rwidth=None, log=False,
-                                                  color='blue', label=None, stacked=True, hold=None)
-    n_rand, bins_rand, patches_rand = plt.hist(random_list, bins=range(71), range=None, normed=False, weights=None,
-                                               cumulative=False, bottom=None, histtype='bar', align='mid',
-                                               orientation='vertical', rwidth=.3, log=False, color='red', label=None,
-                                               stacked=True, hold=None)
-    blue_data = mpatches.Patch(color='blue', label='Winning Picks')
-    red_data = mpatches.Patch(color='red', label='Random Picks')
+    whiteBins = np.arange(71)
+    powerBins = np.arange(28)
+    fig, axes = plt.subplots(nrows=1, ncols=2)
+    ax0, ax1 = axes.flat
 
-    plt.legend(handles=[blue_data, red_data])
-    plt.xlabel('Picks')
-    plt.ylabel('Frequencies')
+    ax0.hist(winningWhiteBalls, whiteBins, range=None, normed=False, weights=None, cumulative=False,
+             bottom=None, histtype='bar', align='left', orientation='vertical', rwidth=None, log=False,
+             color='blue', label=None, stacked=True)
+    ax0.legend(prop={'size': 10})
+    ax0.set_title('Winning White Balls')
 
-    plt.savefig('WhiteBallsVsRandomNums.png')
+    ax1.hist(winningPowerBalls, powerBins, range=None, normed=False, weights=None, cumulative=False,
+             bottom=None, histtype='bar', align='left', orientation='vertical', rwidth=None, log=False,
+             color='red', label=None, stacked=True)
+    ax1.set_title('Winning Power Balls')
+
+    plt.tight_layout()
     plt.show()
 
 def getAverage():
@@ -120,7 +131,8 @@ def runTest(runCount):
         random_list[:] = []
     getAverage()
 
+
 scrape(URL7)
 #runTest(1)
-makeRanList()
+#makeRanList()
 plotHist()
