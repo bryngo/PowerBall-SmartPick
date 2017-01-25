@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
 import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
 import random
 import numpy as np
 from twilio.rest import TwilioRestClient
