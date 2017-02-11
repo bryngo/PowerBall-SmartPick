@@ -102,11 +102,14 @@ def plotHist():
     plt.show()
 
 
-# create a list of random numbers (1 - 69) of reasonable size
+# creates randomly generated lists for white balls and power balls
 def createRandomList():
+
+    # White balls
     for i in range(500):
         randomWhiteList.append(random.randrange(1, 70, 1))
 
+    # Power balls
     for i in range(100):
         randomPowerList.append(random.randrange(1, 27, 1))
 
