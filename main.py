@@ -11,8 +11,9 @@ client = TwilioRestClient(account_sid, auth_token)
 
 winningPowerBalls = []
 winningWhiteBalls = []
+randomWhiteList = []
+randomPowerList = []
 drawDates = []
-random_list = []
 averages = []
 # Dates indicate starting dates for the game changes (refer to discoveries.txt)
 
@@ -39,7 +40,7 @@ URL6 = 'http://www.powerball.com/powerball/pb_nbr_history.asp?startDate=10%2F3%2
 URL7 = 'http://www.powerball.com/powerball/pb_nbr_history.asp?startDate=12%2F17%2F2016&endDate=10%2F3%2F2015'
 
 
-
+# Scrape the URL
 def scrape(url):
 
     r = requests.get(url)
@@ -64,74 +65,52 @@ def scrape(url):
         drawDates.pop(0)
 
 
-# makes a random list of numbers
-def makeRanList():
-    for i in range(535):
-        random_list.append(random.randrange(1, 70, 1))
-
-
-# helper function to compare random list of numbers to actual pulled numbers
-def getDelt(white, rand):
-
-    delt = []
-
-    for i in range(len(white)):
-        delta = white[i] - rand[i]
-        delt.append(delta)
-
-    sum = np.cumsum(delt)
-
-    avergae = sum / len(white)
-
-    averages.append(avergae)
-
-
-
-def getStats():
-
-    n_white, bins_white, patches_white = plt.hist(winningWhiteBalls, bins=range(71), range=None, normed=False, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=None, log=False, color='blue', label=None, stacked=True, hold=None)
-    #plt.hist(winningPowerBalls, bins=range(28), range=None, normed=False, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=.75, log=False, color='red', label=None, stacked=True, hold=None)
-    n_rand, bins_rand, patches_rand = plt.hist(random_list, bins=range(71), range=None, normed=False, weights=None, cumulative=False, bottom=None, histtype='bar', align='mid', orientation='vertical', rwidth=.3, log=False, color='red', label=None, stacked=True, hold=None)
-
-    getDelt(n_white, n_rand)
-
-
+# Plot the historgrams
 def plotHist():
     whiteBins = np.arange(71)
     powerBins = np.arange(28)
-    fig, axes = plt.subplots(nrows=1, ncols=2)
-    ax0, ax1 = axes.flat
+    fig, axes = plt.subplots(nrows=2, ncols=2)
+    ax0, ax1, ax2, ax3 = axes.flat
 
+    # Plot for the white balls (1 - 69)
     ax0.hist(winningWhiteBalls, whiteBins, range=None, normed=False, weights=None, cumulative=False,
              bottom=None, histtype='bar', align='left', orientation='vertical', rwidth=None, log=False,
              color='blue', label=None, stacked=True)
     ax0.legend(prop={'size': 10})
     ax0.set_title('Winning White Balls')
 
+
+    # Plot for the power balls (1 - 26)
     ax1.hist(winningPowerBalls, powerBins, range=None, normed=False, weights=None, cumulative=False,
              bottom=None, histtype='bar', align='left', orientation='vertical', rwidth=None, log=False,
              color='red', label=None, stacked=True)
     ax1.set_title('Winning Power Balls')
 
+    # Plot for randomly generated frequencies 1- 69
+    ax2.hist(randomWhiteList, whiteBins, range=None, normed=False, weights=None, cumulative=False,
+             bottom=None, histtype='bar', align='left', orientation='vertical', rwidth=None, log=False,
+             color='red', label=None, stacked=True)
+    ax2.set_title('Random Frequency 1 - 69')
+
+    # Plot for randomly generated frequencies 1 - 26
+    ax3.hist(randomPowerList, powerBins, range=None, normed=False, weights=None, cumulative=False,
+             bottom=None, histtype='bar', align='left', orientation='vertical', rwidth=None, log=False,
+             color='red', label=None, stacked=True)
+    ax3.set_title('Random Frequency 1 - 26')
+
     plt.tight_layout()
     plt.show()
 
-def getAverage():
-    sum = np.cumsum(averages)
-    avg = sum[len(averages) - 1] / len(averages)
 
-    print(avg)
+# create a list of random numbers (1 - 69) of reasonable size
+def createRandomList():
+    for i in range(500):
+        randomWhiteList.append(random.randrange(1, 70, 1))
 
-def runTest(runCount):
-
-    for i in range(runCount):
-        makeRanList()
-        getStats()
-        random_list[:] = []
-    getAverage()
+    for i in range(100):
+        randomPowerList.append(random.randrange(1, 27, 1))
 
 
 scrape(URL7)
-#runTest(1)
-#makeRanList()
+createRandomList();
 plotHist()
