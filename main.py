@@ -3,11 +3,7 @@ import requests
 import matplotlib.pyplot as plt
 import random
 import numpy as np
-from twilio.rest import TwilioRestClient
 
-account_sid = "ACec8e89fbcc98bc086180e75ba263bce4"
-auth_token = "239d886ffe5d7f6f7d4da6e0d886f966"
-client = TwilioRestClient(account_sid, auth_token)
 
 winningPowerBalls = []
 winningWhiteBalls = []
